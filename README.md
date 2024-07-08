@@ -4,7 +4,7 @@ This project is a Python-based toolkit for working with the New Ithkuil language
 
 ## Project Structure
 
-'''
+```
 ithkuil/
 │
 ├── morphology/
@@ -30,7 +30,8 @@ ithkuil/
 └── utils/
     ├── init.py
     └── shortcuts.py
-'''
+```
+
 
 ## Roadmap
 
