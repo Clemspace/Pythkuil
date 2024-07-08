@@ -88,7 +88,7 @@ Contributions to this project are welcome. Please feel free to submit pull reque
 
 ## License
 
-[Insert your chosen license here]
+[MIT License]
 
 ## Acknowledgements
 
