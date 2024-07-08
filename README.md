@@ -1,37 +1,47 @@
 # New Ithkuil Language Toolkit
 
-This project is a Python-based toolkit for working with the New Ithkuil language, a highly sophisticated constructed language designed for precise and unambiguous communication. This toolkit is specifically related to Ithkuil III and IV, the latest versions of the language.
+This project is a Python-based toolkit for working with the New Ithkuil language, a highly sophisticated constructed language designed for precise and unambiguous communication. This toolkit is specifically related to Ithkuil III, the latest version of the language.
 
 ## Project Structure
 
 ```
 Pythkuil/
 │
-├── morphology/
-│   ├── init.py
-│   ├── configuration.py
-│   ├── affiliation.py
-│   ├── perspective.py
-│   ├── extension.py
-│   ├── essence.py
-│   ├── version.py
-│   ├── function.py
-│   ├── context.py
-│   ├── ca_complex.py
-│   ├── affix.py
-│   ├── phonology.py
-│   └── slots.py
-│
 ├── grammar/
 │   ├── init.py
-│   ├── formative.py
-│   └── cases.py
+│   ├── cases.py
+│   └── formative.py
 │
-└── utils/
-    ├── init.py
-    └── shortcuts.py
+├── morphology/
+│   ├── init.py
+│   ├── affiliation.py
+│   ├── affix.py
+│   ├── ca_complex.py
+│   ├── configuration.py
+│   ├── context.py
+│   ├── essence.py
+│   ├── extension.py
+│   ├── function.py
+│   ├── perspective.py
+│   ├── phonology.py
+│   ├── slots.py
+│   ├── specification.py
+│   ├── stem.py
+│   └── version.py
+│
+├── resources/
+│   ├── newithkuil_affixes.pdf
+│   └── newithkuil_lexicon.pdf
+│
+├── utils/
+│   ├── init.py
+│   └── shortcuts.py
+│
+├── init.py
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
-
 
 ## Roadmap
 
@@ -88,7 +98,7 @@ Contributions to this project are welcome. Please feel free to submit pull reque
 
 ## License
 
-[MIT License]
+[Insert your chosen license here]
 
 ## Acknowledgements
 
