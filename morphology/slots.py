@@ -1,6 +1,10 @@
 from enum import Enum
 from typing import Optional, List
 from .version import Version
+from Pythkuil.grammar.formative import Stem
+from .function import Function
+from .configuration import Configuration
+from .specification import Specification
 class SlotI:
     """Concatenation status"""
     def __init__(self, concatenation_type: Optional[str] = None):
