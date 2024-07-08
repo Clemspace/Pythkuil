@@ -1,4 +1,4 @@
-# New Ithkuil Language Toolkit
+# Pythkuil
 
 This project is a Python-based toolkit for working with the New Ithkuil language, a highly sophisticated constructed language designed for precise and unambiguous communication. This toolkit is specifically related to Ithkuil III and IV, the latest versions of the language.
 
