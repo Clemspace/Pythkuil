@@ -1,16 +1,16 @@
 from enum import Enum
 from typing import Optional
-from ithkuil.morphology.configuration import Configuration
-from ithkuil.morphology.affiliation import Affiliation
-from ithkuil.morphology.perspective import Perspective
-from ithkuil.morphology.extension import Extension
-from ithkuil.morphology.essence import Essence
-from ithkuil.morphology.version import Version
-from ithkuil.morphology.function import Function
-from ithkuil.morphology.context import Context
-from ithkuil.morphology.ca_complex import CAComplex
-from ithkuil.utils.shortcuts import apply_shortcut, decode_shortcut
-from ithkuil.grammar.cases import Case, CaseScope
+from Pythkuil.morphology.configuration import Configuration
+from Pythkuil.morphology.affiliation import Affiliation
+from Pythkuil.morphology.perspective import Perspective
+from Pythkuil.morphology.extension import Extension
+from Pythkuil.morphology.essence import Essence
+from Pythkuil.morphology.version import Version
+from Pythkuil.morphology.function import Function
+from Pythkuil.morphology.context import Context
+from Pythkuil.morphology.ca_complex import CAComplex
+from Pythkuil.utils.shortcuts import apply_shortcut, decode_shortcut
+from Pythkuil.grammar.cases import Case, CaseScope
 
 class Stem(Enum):
     S0 = 0

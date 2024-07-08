@@ -7,5 +7,15 @@ class Affiliation(Enum):
     COA = 4  # Coalescent
 
 def get_affiliation_affix(affil: Affiliation) -> str:
-    # TODO: Implement the logic to return the appropriate affix
-    pass
+    affixes = {
+        Affiliation.CSL: '',  # Default, no affix
+        Affiliation.ASO: 'l',
+        Affiliation.VAR: 'r',
+        Affiliation.COA: 'ř'
+    }
+    return affixes[affil]
+
+@classmethod
+def parse(cls, affix: str) -> 'Affiliation':
+    parse_map = {'': cls.CSL, 'l': cls.ASO, 'r': cls.VAR, 'ř': cls.COA}
+    return parse_map.get(affix, cls.CSL)  # Default to CSL if not found
