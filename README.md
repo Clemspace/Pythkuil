@@ -1,11 +1,11 @@
 # New Ithkuil Language Toolkit
 
-This project is a Python-based toolkit for working with the New Ithkuil language, a highly sophisticated constructed language designed for precise and unambiguous communication. This toolkit is specifically related to Ithkuil III, the latest version of the language.
+This project is a Python-based toolkit for working with the New Ithkuil language, a highly sophisticated constructed language designed for precise and unambiguous communication. This toolkit is specifically related to Ithkuil III and IV, the latest versions of the language.
 
 ## Project Structure
 
 ```
-ithkuil/
+Pythkuil/
 │
 ├── morphology/
 │   ├── init.py
