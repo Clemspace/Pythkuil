@@ -10,7 +10,19 @@ Pythkuil/
 ├── grammar/
 │   ├── init.py
 │   ├── cases.py
-│   └── formative.py
+│   ├── formative.py
+│   ├── word_types/
+│   │   ├── init.py
+│   │   ├── adjunct.py
+│   │   ├── formative.py
+│   │   ├── ithkuil_word.py
+│   │   ├── numerical.py
+│   │   ├── referential.py
+│   │   └── special_construct.py
+│   └── parsers/
+│       ├── init.py
+│       ├── formative_parser.py
+│       └── ithkuil_parser.py
 │
 ├── morphology/
 │   ├── init.py
@@ -29,13 +41,21 @@ Pythkuil/
 │   ├── stem.py
 │   └── version.py
 │
+├── lexicon/
+│   ├── init.py
+│   ├── root.py
+│   └── root_database.py
+│
 ├── resources/
 │   ├── newithkuil_affixes.pdf
-│   └── newithkuil_lexicon.pdf
+│   ├── newithkuil_lexicon.pdf
+│   ├── New Ithkuil Single Page Cheat Sheet.pdf
+│   └── The New Ithkuil Cheatsheet (with definitions).pdf
 │
 ├── utils/
 │   ├── init.py
-│   └── shortcuts.py
+│   ├── shortcuts.py
+│   └── pdf_parser.py
 │
 ├── init.py
 ├── .gitignore
@@ -45,61 +65,85 @@ Pythkuil/
 
 ## Roadmap
 
-1. Implement core functionality:
-   - Fill in the TODO sections in each file, especially in the morphology files.
-   - Implement the generate() and parse() methods in the Formative class.
-   - Develop the logic for case accessors and case stacking in the CaseSystem class.
+### Milestone 1: Core Language Structures
+- [ ] Implement base classes for fundamental Ithkuil concepts
+- [ ] Create enums for all categorical values
+- [ ] Develop utility functions for phonological rules
 
-2. Create utility functions:
-   - Implement functions for handling vowel sequences and consonant forms.
-   - Create functions for applying and interpreting morphophonological rules.
+### Milestone 2: Lexicon and Affix Database
+- [ ] Parse lexicon PDF to extract roots and meanings
+- [ ] Create database structure for roots and stems
+- [ ] Parse affix PDF and implement lookup system
 
-3. Develop a lexicon system:
-   - Create a database or structured file to store New Ithkuil roots and their meanings. 
-   - Implement functions to lookup and retrieve roots and their associated stems.
+### Milestone 3: Word Formation
+- [ ] Implement methods to generate valid Formatives
+- [ ] Create functions for applying affixes
+- [ ] Develop methods for concatenation and incorporation
+- [ ] Implement stress assignment rules
 
-4. Build parsing and generation pipelines:
-   - Create a system to take a New Ithkuil word and break it down into its constituent morphological parts.
-   - Develop a reverse process to take morphological information and construct a valid New Ithkuil word.
+### Milestone 4: Parsing and Validation
+- [ ] Create parser for Ithkuil words
+- [ ] Implement validation rules
+- [ ] Develop error reporting system
+- [ ] Create detailed word breakdown system
 
-5. Implement higher-level grammar rules:
-   - Develop classes and functions to handle sentence structure and syntax.
-   - Implement logic for handling complex grammatical constructions like case-frames.
+### Milestone 5: Sentence-Level Structures
+- [ ] Implement classes for case-frames and case-accessors
+- [ ] Develop methods for sentence structure and word order
+- [ ] Create system for register and bias adjuncts
+- [ ] Implement sentence-level parsing and validation
 
-6. Create a translation system:
-   - Develop a basic framework for translating between New Ithkuil and another language (like English).
-   - Implement rules for handling the semantic nuances of New Ithkuil in translation.
+### Milestone 6: Semantic Interpretation
+- [ ] Develop system for semantic interpretation
+- [ ] Create methods to combine meanings of roots, stems, and affixes
+- [ ] Implement system for handling nuanced meanings
 
-7. Develop corpus generation tools:
-   - Create functions to generate valid New Ithkuil words and sentences based on your implemented rules.
-   - Implement variety and randomness in generation to create a diverse corpus.
+### Milestone 7: Corpus Generation Tools
+- [ ] Develop methods to generate valid Ithkuil words and sentences
+- [ ] Create system for translating simple concepts into Ithkuil
+- [ ] Implement tools for expanding simple sentences into complex ones
 
-8. Build a testing framework:
-   - Develop unit tests for each component of your system.
-   - Create integration tests to ensure different parts of the system work together correctly.
-   - Implement a way to validate generated New Ithkuil against the grammar rules.
+### Milestone 8: Language Model Integration
+- [ ] Create data generation pipeline for training language models
+- [ ] Implement methods to validate and correct generated Ithkuil text
+- [ ] Develop tools to analyze semantic accuracy of generated text
+- [ ] Create system for fine-tuning language models on Ithkuil data
 
-9. Create a user interface:
-   - Develop a command-line interface for interacting with your tools.
-   - Creating a simple web interface for broader accessibility.
+### Milestone 9: User Interface and Documentation
+- [ ] Develop command-line interface
+- [ ] Create comprehensive documentation
+- [ ] Implement simple web interface
+- [ ] Create tutorials and examples
 
-10. Documentation and refinement:
-    - Write comprehensive documentation for the codebase and how to use the tools.
-    - Continually refine and optimize for more complex functionality.
-
-## References
-
-- [Ithkuil Subreddit](https://www.reddit.com/r/Ithkuil/comments/nnvuzn/welcome_to_the_ithkuil_subreddit_read_this_first/)
-- [Ithkuil Discord Server](https://discord.com/invite/WgFrX8J)
+### Milestone 10: Testing and Refinement
+- [ ] Develop comprehensive test suite
+- [ ] Implement performance optimizations
+- [ ] Refine error handling and user feedback
+- [ ] Conduct thorough testing with complex Ithkuil constructions
 
 ## Contributing
 
 Contributions to this project are welcome. Please feel free to submit pull requests or open issues to discuss potential improvements or report bugs.
 
+To contribute:
+1. Fork the repository
+2. Create a new branch for your feature
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+Please ensure your code adheres to the project's coding standards and include tests for new features.
+
 ## License
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
 This project is based on the work of John Quijada, the creator of the Ithkuil language. We acknowledge his incredible contribution to the field of constructed languages.
+
+## References
+
+- [Official Ithkuil Website](http://www.ithkuil.net/)
+- [Ithkuil Subreddit](https://www.reddit.com/r/Ithkuil/)
+- [Ithkuil Discord Server](https://discord.gg/WgFrX8J)

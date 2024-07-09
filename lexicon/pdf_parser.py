@@ -17,6 +17,9 @@ from lexicon.root_database import RootDatabase
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+ITHKUIL_CONSONANTS = r"[BCČÇDFJKLMNŇPQRSŠTVXZŽĻŘŢ]"
+ITHKUIL_CONSONANTS_WITH_MODS = r"[BCČÇDFJKLMNŇPQRSŠTVXZŽĻŘŢ]['H]?"
+
 def extract_text_from_pdf(pdf_path: str) -> str:
     output = StringIO()
     with open(pdf_path, 'rb') as file:
@@ -27,51 +30,64 @@ def extract_roots_from_pdf(pdf_path: str) -> RootDatabase:
     root_db = RootDatabase()
     text = extract_text_from_pdf(pdf_path)
     
-    # Improved regex for root extraction
-    root_entries = re.finditer(r'(?:^|\n)(-[A-ZČŠŽŇ]\w+-)(?:\s+([^-]+?)(?=\n-[A-ZČŠŽŇ]\w+-|\Z)|\s*$)', text, re.DOTALL)
+    # Extract root patterns
+    root_pattern = rf"(?:^|\n)(-({ITHKUIL_CONSONANTS_WITH_MODS})+-)(?:\s+([^-]+?)(?=\n-({ITHKUIL_CONSONANTS_WITH_MODS})+-|\Z)|\s*$)"
+    root_entries = re.finditer(root_pattern, text, re.DOTALL)
     
     for entry in root_entries:
         consonantal_form = entry.group(1)[1:-1]  # Remove hyphens
-        content = entry.group(2).strip() if entry.group(2) else ""
-        root = parse_root_entry(consonantal_form, content)
+        content = entry.group(3).strip() if entry.group(3) else ""
+        root = parse_root_entry(consonantal_form, content, root_db)
         if root:
             root_db.add_root(root)
         else:
             logging.warning(f"Failed to parse root: {consonantal_form}")
     
+    # Extract roots from the "The following stems" section
+    extract_following_stems(text, root_db)
+    
     expand_abbreviated_definitions(root_db)
     
     return root_db
 
-def parse_root_entry(consonantal_form: str, content: str) -> Root:
-    meaning = re.search(r'(.*?)(?=STEM 1:|STEM 2:|STEM 3:|$)', content, re.DOTALL)
+def parse_root_entry(consonantal_form: str, content: str, root_db: RootDatabase) -> Root:
+    meaning = re.search(r'(.*?)(?=STEM 1:|STEM 2:|STEM 3:|BSC|CTE|CSV|OBJ|$)', content, re.DOTALL)
     meaning = meaning.group(1).strip() if meaning else ""
     
     stems = defaultdict(dict)
-    stem_matches = list(re.finditer(r'STEM (\d+)(?:\s*\((.*?)\))?:\s*(.*?)(?=STEM \d+|\Z)', content, re.DOTALL))
     
-    if not stem_matches:
-        # For roots that reference previous definitions or have a different format
-        stem_contents = re.split(r'\s*\d+\.\s*', content)
-        if len(stem_contents) > 1:
-            for i, stem_content in enumerate(stem_contents[1:], start=1):
-                stems[i]['BSC'] = stem_content.strip()
-        else:
-            stems[1]['BSC'] = content.strip()
-    else:
+    # Check for reference to previous pattern
+    pattern_reference = re.search(r'(?:follow|have) the (?:same|following) (?:Specification|Stem) pattern as (?:the root|Sec\.) ([-\w]+)', content)
+    if pattern_reference:
+        referenced_root = pattern_reference.group(1)
+        if referenced_root in root_db.roots:
+            return Root(consonantal_form, content, root_db.roots[referenced_root].stems, None)
+    
+    # Check for the pattern with all specifications for stem 1
+    full_spec_match = re.search(r'STEM 1.*?(?=STEM 2|\Z)', content, re.DOTALL)
+    if full_spec_match:
+        stem_info = full_spec_match.group(0)
+        for spec in ['BSC', 'CTE', 'CSV', 'OBJ']:
+            spec_match = re.search(rf'{spec}\s+(.*?)(?=BSC|CTE|CSV|OBJ|\Z)', stem_info, re.DOTALL)
+            if spec_match:
+                stems[1][spec] = spec_match.group(1).strip()
+    
+    # Check for the pattern with numbered stems
+    stem_matches = list(re.finditer(r'(?:STEM|Stem) (\d+)(?:\s*\((.*?)\))?:\s*(.*?)(?=(?:STEM|Stem) \d+|\Z)', content, re.DOTALL))
+    if stem_matches:
         for stem_match in stem_matches:
             stem_number = int(stem_match.group(1))
             stem_info = stem_match.group(3).strip()
-            
-            spec_matches = re.finditer(r'(BSC|CTE|CSV|OBJ)(?:\s*\((.*?)\))?:\s*(.*?)(?=(?:BSC|CTE|CSV|OBJ)|\Z)', stem_info, re.DOTALL)
-            for spec_match in spec_matches:
-                spec, qualifier, definition = spec_match.groups()
-                stems[stem_number][spec] = definition.strip()
-                if qualifier:
-                    stems[stem_number][f"{spec}_qualifier"] = qualifier.strip()
+            stems[stem_number]['BSC'] = stem_info
     
-    # Ensure we have 18 stems
-    for i in range(1, 19):
+    # Check for the pattern with numbered definitions
+    num_def_matches = re.finditer(r'(\d+)\.\s*(.*?)(?=\d+\.|\Z)', content, re.DOTALL)
+    if num_def_matches:
+        for i, match in enumerate(num_def_matches, start=1):
+            stems[i]['BSC'] = match.group(2).strip()
+    
+    # Ensure we have 3 stems at least
+    for i in range(1, 4):
         if i not in stems:
             stems[i] = {'BSC': f"(Stem {i} not specified)"}
     
@@ -80,18 +96,26 @@ def parse_root_entry(consonantal_form: str, content: str) -> Root:
     
     return Root(consonantal_form, meaning, dict(stems), associated_affix)
 
+def extract_following_stems(text: str, root_db: RootDatabase):
+    following_stems_pattern = rf"The following (?:roots/stems|stems) .* (?:have|follow) the same Specification pattern as (?:the root|Sec\.) ([-\w]+).*?:\s*((?:-({ITHKUIL_CONSONANTS_WITH_MODS})+-.*?)+)(?=\n\n|\Z)"
+    following_stems_sections = re.finditer(following_stems_pattern, text, re.DOTALL)
+    for section in following_stems_sections:
+        pattern_root = section.group(1)
+        if pattern_root in root_db.roots:
+            individual_root_pattern = rf"-({ITHKUIL_CONSONANTS_WITH_MODS}+)-\s*(.*?)(?=-({ITHKUIL_CONSONANTS_WITH_MODS})+-|\Z)"
+            roots = re.finditer(individual_root_pattern, section.group(2), re.DOTALL)
+            for root in roots:
+                consonantal_form = root.group(1)
+                content = root.group(2).strip()
+                new_root = Root(consonantal_form, f"(As per {pattern_root})", root_db.roots[pattern_root].stems, None)
+                root_db.add_root(new_root)
+
 def expand_abbreviated_definitions(root_db: RootDatabase):
-    pattern_roots = [root for root in root_db.roots.values() if "The following" in root.meaning]
-    
-    for pattern_root in pattern_roots:
-        pattern = pattern_root.stems
-        referenced_roots = [root for root in root_db.roots.values() if not root.meaning and len(root.stems) == len(pattern)]
-        
-        for ref_root in referenced_roots:
-            for stem_num, stem_specs in pattern.items():
-                for spec, _ in stem_specs.items():
-                    if spec not in ref_root.stems[stem_num]:
-                        ref_root.stems[stem_num][spec] = f"(As per {pattern_root.consonantal_form})"
+    for root in root_db.roots.values():
+        if root.meaning.startswith("(As per"):
+            referenced_root = root.meaning[8:-1]
+            if referenced_root in root_db.roots:
+                root.stems = root_db.roots[referenced_root].stems.copy()
 
 def test_pdf_parsing():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -110,7 +134,7 @@ def test_pdf_parsing():
     logging.info(f"Loaded {len(loaded_db.roots)} roots from JSON file")
     
     # Test a few specific roots
-    test_roots = ['CŇ', 'ČV', 'GPW', 'RČV']
+    test_roots = ['CŇ', 'ČV', 'GPW', 'RČV', 'S', 'T', 'ŇM', 'MSFR', 'MMZBW']
     for root in test_roots:
         if root in loaded_db.roots:
             logging.info(f"\nTesting root: {root}")
