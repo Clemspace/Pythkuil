@@ -1,6 +1,6 @@
 from enum import Enum
 from Pythkuil.morphology.function import Function
-from Pythkuil.grammar.formative import Specification
+from Pythkuil.grammar.word_types.formative import Specification
 
 class Context(Enum):
     EXS = 1  # Existential

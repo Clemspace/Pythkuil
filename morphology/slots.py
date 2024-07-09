@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, List
 from .version import Version
-from Pythkuil.grammar.formative import Stem
+from Pythkuil.grammar.word_types.formative import Stem
 from .function import Function
 from .configuration import Configuration
 from .specification import Specification
