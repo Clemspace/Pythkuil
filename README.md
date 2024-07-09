@@ -43,14 +43,17 @@ Pythkuil/
 │
 ├── lexicon/
 │   ├── init.py
+|   ├── affix.py
 │   ├── root.py
-│   └── root_database.py
+│   ├── root_database
+│   └── test_lexicon.py
 │
 ├── resources/
 │   ├── newithkuil_affixes.pdf
 │   ├── newithkuil_lexicon.pdf
 │   ├── New Ithkuil Single Page Cheat Sheet.pdf
-│   └── The New Ithkuil Cheatsheet (with definitions).pdf
+│   ├── The New Ithkuil Cheatsheet (with definitions).pdf
+|   └── Lexicon.json
 │
 ├── utils/
 │   ├── init.py
@@ -132,8 +135,6 @@ To contribute:
 4. Push to the branch
 5. Create a new Pull Request
 
-Please ensure your code adheres to the project's coding standards and include tests for new features.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -147,3 +148,4 @@ This project is based on the work of John Quijada, the creator of the Ithkuil la
 - [Official Ithkuil Website](http://www.ithkuil.net/)
 - [Ithkuil Subreddit](https://www.reddit.com/r/Ithkuil/)
 - [Ithkuil Discord Server](https://discord.gg/WgFrX8J)
+- [Complete Ithkuil Lexicon](https://github.com/yuorb/lexicon-json)
