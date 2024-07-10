@@ -1,18 +1,16 @@
-from enum import Enum
-from typing import Optional
-from Pythkuil.morphology.configuration import Configuration
-from Pythkuil.morphology.affiliation import Affiliation
-from Pythkuil.morphology.perspective import Perspective
-from Pythkuil.morphology.extension import Extension
-from Pythkuil.morphology.essence import Essence
-from Pythkuil.morphology.version import Version
-from Pythkuil.morphology.context import Context
-from Pythkuil.morphology.ca_complex import CAComplex
-from Pythkuil.utils.shortcuts import apply_shortcut, decode_shortcut
-from Pythkuil.grammar.cases import Case, CaseScope
-from Pythkuil.lexicon.root import Root
-from Pythkuil.morphology.stem import Stem, get_stem_vowel, parse_stem, get_stem_description, apply_stem_to_root
-from Pythkuil.morphology.specification import (
+from ...morphology.configuration import Configuration
+from ...morphology.affiliation import Affiliation
+from ...morphology.perspective import Perspective
+from ...morphology.extension import Extension
+from ...morphology.essence import Essence
+from ...morphology.version import Version
+from ...morphology.context import Context
+from ...morphology.ca_complex import CAComplex
+from ...utils.shortcuts import apply_shortcut, decode_shortcut
+from ...grammar.cases import Case, CaseScope
+from ...lexicon.root import Root
+from ...morphology.stem import Stem, get_stem_vowel, parse_stem, get_stem_description, apply_stem_to_root
+from ...morphology.specification import (
     Specification, Function, get_specification_vowel, 
     combine_specification_and_stem, parse_specification_and_stem, 
     get_specification_description, apply_specification
@@ -129,10 +127,10 @@ if __name__ == "__main__":
     from Pythkuil.lexicon.root_database import RootDatabase
 
     # Load the lexicon
-    db = RootDatabase.load_from_file("path/to/your/lexicon.json")
+    db = RootDatabase.load_from_file(r"C:\Users\Clemspace\Mistral\Pythkuil\resources\lexicon.json")
 
     formative = Formative()
-    root = db.get_root("K")  # Assuming 'K' is a valid root in your lexicon
+    root = db.get_root("RČV")  # Assuming 'RČV' is a valid root in your lexicon
     if root:
         formative.set_root(root)
         formative.stem = Stem.S2
