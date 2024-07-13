@@ -104,7 +104,7 @@ class CaseProperties:
 class CaseSystem:
     def __init__(self):
         self.cases: Dict[Case, CaseProperties] = self._initialize_cases()
-        self.case_scopes: Dict[CaseScope, str] = self._initialize_case_scopes()
+        self.case_scopes: Dict[CaseScope, Dict[str, str]] = self._initialize_case_scopes()
 
     def _initialize_cases(self) -> Dict[Case, CaseProperties]:
         return {
@@ -221,15 +221,6 @@ class CaseSystem:
     def get_case_properties(self, case: Case) -> CaseProperties:
         return self.cases[case]
 
-    def get_case_by_affix(self, affix: str) -> Optional[Case]:
-        for case, props in self.cases.items():
-            if props.affix == affix:
-                return case
-        return None
-
-    def get_case_scope(self, scope: CaseScope) -> str:
-        return self.case_scopes[scope]
-
     def apply_case_accessor(self, case: Case, is_inverse: bool = False) -> str:
         # TODO: Implement case accessor logic
         pass
@@ -237,6 +228,20 @@ class CaseSystem:
     def apply_case_stacking(self, base_case: Case, stacked_case: Case) -> str:
         # TODO: Implement case stacking logic
         pass
+    def get_case_properties(self, case: Case) -> CaseProperties:
+        return self.cases[case]
+
+    def get_case_by_affix(self, affix: str) -> Optional[Case]:
+        for case, props in self.cases.items():
+            if props.affix == affix:
+                return case
+        return None
+
+    def get_case_scope(self, scope: CaseScope) -> Dict[str, str]:
+        return self.case_scopes[scope]
+
+# Initialize the CaseSystem
+case_system = CaseSystem()
 
 # Usage example:
 if __name__ == "__main__":

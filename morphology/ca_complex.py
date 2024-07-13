@@ -5,7 +5,7 @@ from .affiliation import Affiliation
 from .perspective import Perspective
 from .extension import Extension
 from .essence import Essence
-from .context import Context, Function, Specification, apply_context_rules
+from .slots.slot_iv import Context, Function, Specification, apply_context_rules
 
 class CAComplex:
     def __init__(self, config: Configuration, affil: Affiliation, persp: Perspective, ext: Extension, ess: Essence):
@@ -20,29 +20,37 @@ class CAComplex:
         return apply_context_rules(ca_form, context, function, specification)
 
     def _generate_ca_form(self) -> str:
-        # This method generates the CA form without the vocalic context
         components = [
-            self.configuration.value,
             self.affiliation.value,
-            self.perspective.value,
+            self.configuration.value,
             self.extension.value,
+            self.perspective.value,
             self.essence.value
         ]
         return ''.join(component for component in components if component)
 
+    def apply_stacking(self, stacked_ca: 'CAComplex'):
+        # Apply stacking rules here
+        # For example:
+        self.configuration = stacked_ca.configuration
+        self.affiliation = stacked_ca.affiliation
+        self.perspective = stacked_ca.perspective
+        self.extension = stacked_ca.extension
+        self.essence = stacked_ca.essence
+
     @classmethod
     def parse(cls, ca_string: str) -> 'CAComplex':
         # This method parses a CA string and returns a CAComplex object
-        config = Configuration.parse(ca_string[0])
-        affil = Affiliation.parse(ca_string[1])
-        persp = Perspective.parse(ca_string[2])
-        ext = Extension.parse(ca_string[3])
+        affil = Affiliation.parse(ca_string[0])
+        config = Configuration.parse(ca_string[1])
+        ext = Extension.parse(ca_string[2])
+        persp = Perspective.parse(ca_string[3])
         ess = Essence.parse(ca_string[4])
         return cls(config, affil, persp, ext, ess)
 
     def __str__(self):
-        return f"CAComplex(config={self.configuration}, affil={self.affiliation}, persp={self.perspective}, ext={self.extension}, ess={self.essence})"
-
+            return f"CAComplex(config={self.configuration}, affil={self.affiliation}, persp={self.perspective}, ext={self.extension}, ess={self.essence})"
+        
 def generate_short_form(ca_complex: CAComplex, context: Context, function: Function, specification: Specification) -> Optional[str]:
     # Implement the short-form generation as described in section 3.10
     if (ca_complex.affiliation == Affiliation.CSL and

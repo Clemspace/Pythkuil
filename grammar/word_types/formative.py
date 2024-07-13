@@ -1,3 +1,4 @@
+from typing import Optional, List
 from ...morphology.configuration import Configuration
 from ...morphology.affiliation import Affiliation
 from ...morphology.perspective import Perspective
@@ -15,6 +16,10 @@ from ...morphology.specification import (
     combine_specification_and_stem, parse_specification_and_stem, 
     get_specification_description, apply_specification
 )
+from ...morphology.slots.slot_v import SlotV
+from ...morphology.slots.slot_vii import SlotVII
+from ...morphology.slots.slot_viii import SlotVIII
+from ...morphology.slots.slot_ix import SlotIX, Illocution, Validation
 
 class Formative:
     def __init__(self):
@@ -35,7 +40,7 @@ class Formative:
         self.context: Context = Context.EXS
         
         # Slot V: VXCS Affixes
-        self.slot_v_affixes: list = []
+        self.slot_v: SlotV = SlotV()
         
         # Slot VI: CA Complex
         self.ca_complex: CAComplex = CAComplex(
@@ -47,16 +52,13 @@ class Formative:
         )
         
         # Slot VII: VXCS Affixes
-        self.slot_vii_affixes: list = []
+        self.slot_vii: SlotVII = SlotVII()
         
         # Slot VIII: VN or CN
-        self.vn: Optional[str] = None
-        self.cn: Optional[CaseScope] = None
+        self.slot_viii: SlotVIII = SlotVIII()
         
         # Slot IX: Case or Illocution + Validation
-        self.case: Optional[Case] = None
-        self.illocution: Optional[str] = None
-        self.validation: Optional[str] = None
+        self.slot_ix: SlotIX = SlotIX(Case.THM)
         
         # Slot X: Stress
         self.stress: str = "ultimate"  # Can be "ultimate", "penultimate", or "antepenultimate"
@@ -78,17 +80,45 @@ class Formative:
         if not self.root:
             raise ValueError("Root must be set before generating formative")
 
-        # Generate Slot II
-        slot_ii = combine_specification_and_stem(self.specification, self.stem, self.function)
-        
-        # Apply specification to root
-        word = apply_specification(self.root.root, self.specification, self.stem, self.function)
-        
-        # TODO: Add generation logic for other slots
+        result = ""
 
-        return word
+        # Slot I
+        result += self.concatenation_type or ""
+
+        # Slot II
+        result += combine_specification_and_stem(self.specification, self.stem, self.function)
+
+        # Slot III
+        result += apply_specification(self.root.root, self.specification, self.stem, self.function)
+
+        # Slot IV
+        result += get_specification_vowel(self.specification)
+
+        # Slot V
+        slot_v_str = self.slot_v.generate()
+        result += slot_v_str
+
+        # Slot VI (Ca complex)
+        ca_complex_str = self.ca_complex.generate(self.context, self.function, self.specification)
+        if slot_v_str:
+            ca_complex_str = self.geminate_ca_complex(ca_complex_str)
+        result += ca_complex_str
+
+        # Slot VII
+        result += self.slot_vii.generate()
+
+        # Slot VIII
+        result += self.slot_viii.generate()
+
+        # Slot IX
+        result += self.slot_ix.generate()
+
+        # Slot X (Stress is applied to the whole word, not added as a string)
+
+        return result
 
     def parse(self, formative_string: str):
+        # TODO: Implement full parsing logic
         if len(formative_string) < 3:
             raise ValueError("Invalid formative string")
 
@@ -100,8 +130,6 @@ class Formative:
         self.specification = spec
         self.stem = stem
         self.function = func
-        
-        # TODO: Add parsing logic for other slots
 
     def get_stem_meaning(self) -> str:
         if self.root and self.stem.value < len(self.root.stems):
@@ -119,8 +147,38 @@ class Formative:
                f"  Specification: {self.specification.name} ({get_specification_description(self.specification)})\n" \
                f"  Function: {self.function.name}\n" \
                f"  Meaning: {self.get_stem_meaning()}\n" \
-               f"  Case: {self.case.name if self.case else 'Not set'}\n" \
-               f"  CA Complex: {self.ca_complex.generate()}"
+               f"  Slot V Affixes: {self.slot_v.describe()}\n" \
+               f"  CA Complex: {self.ca_complex}\n" \
+               f"  Slot VII Affixes: {self.slot_vii.describe()}\n" \
+               f"  Slot VIII: {self.slot_viii.describe()}\n" \
+               f"  Slot IX: {self.slot_ix.describe()}\n" \
+               f"  Stress: {self.stress}"
+
+    def geminate_ca_complex(self, ca_complex: str) -> str:
+        # TODO: Implement proper gemination rules
+        return ca_complex + ca_complex[0]
+
+    def apply_ca_stacking(self):
+        for affix in self.slot_v.affixes:
+            if affix.is_ca_stacking:
+                stacked_ca = CAComplex.parse(affix.cs)
+                self.ca_complex.apply_stacking(stacked_ca)
+
+        for affix in self.slot_vii.affixes:
+            if affix.is_ca_stacking:
+                stacked_ca = CAComplex.parse(affix.cs)
+                new_ca = CAComplex(self.ca_complex.configuration, self.ca_complex.affiliation,
+                                   self.ca_complex.perspective, self.ca_complex.extension, self.ca_complex.essence)
+                new_ca.apply_stacking(stacked_ca)
+                self.ca_complex = new_ca
+
+    def add_slot_v_affix(self, affix: VxCsAffix):
+        self.slot_v.add_affix(affix)
+
+    def add_slot_vii_affix(self, affix: VxCsAffix):
+        self.slot_vii.add_affix(affix)
+
+# Usage example remains the same
 
 # Usage example:
 if __name__ == "__main__":
