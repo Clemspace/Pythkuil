@@ -5,7 +5,7 @@ from .affiliation import Affiliation
 from .perspective import Perspective
 from .extension import Extension
 from .essence import Essence
-from .slots.slot_iv import Context, Function, Specification, apply_context_rules
+from .slots.slot_iv import Context, Function, Specification
 
 class CAComplex:
     def __init__(self, config: Configuration, affil: Affiliation, persp: Perspective, ext: Extension, ess: Essence):
@@ -17,21 +17,20 @@ class CAComplex:
 
     def generate(self, context: Context, function: Function, specification: Specification) -> str:
         ca_form = self._generate_ca_form()
-        return apply_context_rules(ca_form, context, function, specification)
+        return ca_form  # You might want to apply context rules here
 
     def _generate_ca_form(self) -> str:
         components = [
-            self.affiliation.value,
-            self.configuration.value,
-            self.extension.value,
-            self.perspective.value,
-            self.essence.value
+            str(self.affiliation.value),
+            str(self.configuration.value),
+            str(self.extension.value),
+            str(self.perspective.value),
+            str(self.essence.value)
         ]
         return ''.join(component for component in components if component)
 
     def apply_stacking(self, stacked_ca: 'CAComplex'):
         # Apply stacking rules here
-        # For example:
         self.configuration = stacked_ca.configuration
         self.affiliation = stacked_ca.affiliation
         self.perspective = stacked_ca.perspective
@@ -49,8 +48,8 @@ class CAComplex:
         return cls(config, affil, persp, ext, ess)
 
     def __str__(self):
-            return f"CAComplex(config={self.configuration}, affil={self.affiliation}, persp={self.perspective}, ext={self.extension}, ess={self.essence})"
-        
+        return f"CAComplex(config={self.configuration}, affil={self.affiliation}, persp={self.perspective}, ext={self.extension}, ess={self.essence})"
+
 def generate_short_form(ca_complex: CAComplex, context: Context, function: Function, specification: Specification) -> Optional[str]:
     # Implement the short-form generation as described in section 3.10
     if (ca_complex.affiliation == Affiliation.CSL and
@@ -69,18 +68,7 @@ def generate_short_form(ca_complex: CAComplex, context: Context, function: Funct
         else:
             return None  # No short form available
 
-        vowel = apply_context_rules('', context, function, specification)
+        vowel = 'a'  # You might want to determine this based on context, function, and specification
         return prefix + vowel
 
     return None  # No short form available
-
-# Example usage:
-if __name__ == "__main__":
-    ca = CAComplex(Configuration.UPX, Affiliation.CSL, Perspective.M, Extension.DEL, Essence.NRM)
-    print(ca.generate(Context.FNC, Function.DYN, Specification.BSC))  # Example output
-    
-    short_form = generate_short_form(ca, Context.FNC, Function.DYN, Specification.BSC)
-    print(f"Short form: {short_form}")  # Example short form output
-
-    parsed_ca = CAComplex.parse("upxmn")
-    print(parsed_ca)

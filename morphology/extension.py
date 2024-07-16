@@ -1,25 +1,16 @@
 from enum import Enum
 
 class Extension(Enum):
-    DEL = 1  # Delimitive
-    PRX = 2  # Proximal
-    ICP = 3  # Inceptive
-    ATV = 4  # Attenuative
-    GRA = 5  # Graduative
-    DPL = 6  # Depletive
+    DEL = ''  # Delimitive
+    PRX = 'n'  # Proximal
+    ICP = 's'  # Inceptive
+    ATV = 'š'  # Attenuative
+    GRA = 'f'  # Graduative
+    DPL = 't'  # Depletive
 
-def get_extension_affix(ext: Extension) -> str:
-    affixes = {
-        Extension.DEL: '',  # Default, no affix
-        Extension.PRX: 'n',
-        Extension.ICP: 's',
-        Extension.ATV: 'š',
-        Extension.GRA: 'f',
-        Extension.DPL: 't'
-    }
-    return affixes[ext]
+    def __str__(self):
+        return self.value
 
-@classmethod
-def parse(cls, affix: str) -> 'Extension':
-    parse_map = {'': cls.DEL, 'n': cls.PRX, 's': cls.ICP, 'š': cls.ATV, 'f': cls.GRA, 't': cls.DPL}
-    return parse_map.get(affix, cls.DEL)  # Default to DEL if not found
+    @classmethod
+    def parse(cls, affix: str) -> 'Extension':
+        return next((e for e in cls if e.value == affix), cls.DEL)

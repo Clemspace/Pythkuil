@@ -1,21 +1,14 @@
 from enum import Enum
 
 class Affiliation(Enum):
-    CSL = 1  # Consolidative
-    ASO = 2  # Associative
-    VAR = 3  # Variative
-    COA = 4  # Coalescent
+    CSL = ''  # Consolidative
+    ASO = 'l'  # Associative
+    VAR = 'r'  # Variative
+    COA = 'ř'  # Coalescent
 
-def get_affiliation_affix(affil: Affiliation) -> str:
-    affixes = {
-        Affiliation.CSL: '',  # Default, no affix
-        Affiliation.ASO: 'l',
-        Affiliation.VAR: 'r',
-        Affiliation.COA: 'ř'
-    }
-    return affixes[affil]
+    def __str__(self):
+        return self.value
 
-@classmethod
-def parse(cls, affix: str) -> 'Affiliation':
-    parse_map = {'': cls.CSL, 'l': cls.ASO, 'r': cls.VAR, 'ř': cls.COA}
-    return parse_map.get(affix, cls.CSL)  # Default to CSL if not found
+    @classmethod
+    def parse(cls, affix: str) -> 'Affiliation':
+        return next((a for a in cls if a.value == affix), cls.CSL)
